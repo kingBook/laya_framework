@@ -1,11 +1,32 @@
 (function () {
     'use strict';
 
+    class App extends Laya.Script {
+        onAwake() {
+            console.log("App::onAwake();");
+        }
+        onEnable() {
+            console.log("App::onEnable();");
+        }
+        onStart() {
+            console.log("App::onStart();");
+            setTimeout(() => {
+                console.log("open level");
+                Laya.Scene.open("level.scene");
+                Laya.Scene.destroy("main.scene");
+            }, 3000);
+        }
+        onDestroy() {
+            console.log("App::onDestroy();");
+        }
+    }
+
     class GameConfig {
         constructor() {
         }
         static init() {
             var reg = Laya.ClassUtils.regClass;
+            reg("framework/core/App.ts", App);
         }
     }
     GameConfig.width = 640;
@@ -14,7 +35,7 @@
     GameConfig.screenMode = "none";
     GameConfig.alignV = "top";
     GameConfig.alignH = "left";
-    GameConfig.startScene = "";
+    GameConfig.startScene = "main.scene";
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
     GameConfig.stat = false;
