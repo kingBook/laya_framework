@@ -3,7 +3,7 @@
 
     class App extends Laya.Script {
         onAwake() {
-            console.log("App::onAwake();");
+            console.log("App::onAwake();1");
         }
         onEnable() {
             console.log("App::onEnable();");
