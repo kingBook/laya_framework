@@ -1,23 +1,101 @@
 (function () {
     'use strict';
 
+    class BaseGame extends Laya.Script {
+    }
+
+    class PlayerPrefs {
+        static deleteAll() {
+            Laya.LocalStorage.clear();
+        }
+        static deleteKey(key) {
+            Laya.LocalStorage.removeItem(key);
+        }
+        static getFloat(key, defaultValue = 0) {
+            let value = Laya.LocalStorage.getItem(key);
+            let n = parseFloat(value);
+            return isNaN(n) ? defaultValue : n;
+        }
+        static getInt(key, defaultValue = 0) {
+            if (defaultValue !== (defaultValue | 0))
+                console.warn("defaultValue:" + defaultValue + "不是整数将自动取整");
+            let value = Laya.LocalStorage.getItem(key);
+            let n = parseInt(value);
+            return isNaN(n) ? (defaultValue | 0) : (n | 0);
+        }
+        static getString(key, defaultValue = "") {
+            let value = Laya.LocalStorage.getItem(key);
+            if (value)
+                return value;
+            return defaultValue;
+        }
+        static hasKey(key) {
+            if (Laya.LocalStorage.getItem(key))
+                return true;
+            return false;
+        }
+        static setFloat(key, value) {
+            Laya.LocalStorage.setItem(key, value.toString());
+        }
+        static setInt(key, value) {
+            if (value !== (value | 0))
+                console.warn("value:" + value + "不是整数将自动取整");
+            value = value | 0;
+            Laya.LocalStorage.setItem(key, value.toString());
+        }
+        static setString(key, value) {
+            Laya.LocalStorage.setItem(key, value);
+        }
+    }
+
+    var Language;
+    (function (Language) {
+        Language[Language["AUTO"] = 0] = "AUTO";
+        Language[Language["CN"] = 1] = "CN";
+        Language[Language["EN"] = 2] = "EN";
+    })(Language || (Language = {}));
     class App extends Laya.Script {
+        constructor() {
+            super(...arguments);
+            this.games = new BaseGame[0];
+            this._language = Language.AUTO;
+        }
+        static get instance() {
+            return App.s_instance;
+        }
+        static set instance(value) {
+            App.s_instance = value;
+        }
+        get language() {
+            return this._language;
+        }
+        get openCount() {
+            return this._openCount;
+        }
         onAwake() {
-            console.log("App::onAwake();1");
+            App.s_instance = this;
+            this.addOpenCount();
+            if (this._language == Language.AUTO) {
+                this.initLanguage();
+            }
         }
         onEnable() {
-            console.log("App::onEnable();");
         }
         onStart() {
             console.log("App::onStart();");
-            setTimeout(() => {
-                console.log("open level");
-                Laya.Scene.open("level.scene");
-                Laya.Scene.destroy("main.scene");
-            }, 3000);
         }
         onDestroy() {
             console.log("App::onDestroy();");
+        }
+        addOpenCount() {
+            const key = "ApplicationOpenCount";
+            this._openCount = PlayerPrefs.getInt(key, 0) + 1;
+            PlayerPrefs.setInt(key, this._openCount);
+        }
+        initLanguage() {
+            console.log("language:" + navigator.language);
+            let isCN = navigator.language == "zh-CN";
+            this._language = isCN ? Language.CN : Language.EN;
         }
     }
 
