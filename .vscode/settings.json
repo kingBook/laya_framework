@@ -1,0 +1,42 @@
+{
+    "files.exclude": {
+	  "**/.git": true,
+	  "**/.svn": true,
+	  "**/.hg": true,
+	  "**/CVS": true,
+	  "**/.DS_Store": true,
+	  "**/*.meta":true,
+	  "**/*.gitignore":true,
+	  "**/*.csproj":true,
+	  "**/*.sln":true,
+	  "**/*.unity":true,
+	  "**/*.mat":true,
+	  "**/*.ttf":true,
+	  "**/*.wav":true,
+	  "**/*.mp3":true,
+	  "**/*.rar":true,
+	  "**/*.zip":true,
+
+	  "**/.rpt2_cache":true,
+	  "**/.vscode":true,
+	  "**/*.laya":true,
+	  "**/tsconfig.json":true,
+	  "**/libs":true,
+	  "**/bin":true,
+	  "**/laya":true,
+	  "**/src/ui":true,
+	  "**/src/GameConfig.ts":true,
+	  "**/src/Main.ts":true,
+	 
+	},
+	"editor.autoClosingQuotes": "beforeWhitespace",
+	"editor.codeLens": false,
+	"editor.fontSize": 11.5,
+	"editor.trimAutoWhitespace": false,
+	"workbench.sideBar.location": "right",
+	"editor.minimap.enabled": false,
+	"window.zoomLevel": 0,
+	"editor.insertSpaces": false,
+	"editor.fontFamily": "Menlo, 'Courier New', monospace"
+	
+}
