@@ -14,8 +14,8 @@ export default class App extends Laya.Script{
 		App.s_instance=value;
 	}
 	
-	/** @prop {name:games,type:Nodes,accept:BaseGame,tips:"游戏列表"} */
-	private games:BaseGame[]=new BaseGame[0];
+	/** @prop {name:gameNodes,type:Nodes,tips:"游戏节点列表"} */
+	public gameNodes:Laya.Node[];
 	
 
 	private _language:Language=Language.AUTO;
@@ -32,7 +32,7 @@ export default class App extends Laya.Script{
 	}
 	
 
-	public onAwake():void{
+	protected onAwake():void{
 		App.s_instance=this;
 		this.addOpenCount();
 		
@@ -41,21 +41,21 @@ export default class App extends Laya.Script{
 		}
 	}
 	
-	public onEnable():void{
-		
+	protected onEnable():void{
 	}
 	
-	public onStart():void{
-		console.log("App::onStart();");
-		/*setTimeout(() => {
-			console.log("open level");
-			Laya.Scene.open("level.scene");
-			Laya.Scene.destroy("main.scene");
-		}, 3000);*/
+	protected onStart():void{
 	}
 	
-	public onDestroy():void{
-		console.log("App::onDestroy();");
+	protected onUpdate():void{
+	}
+	
+	protected onDestroy():void{
+	}
+	
+	/** 返回指定索引的游戏实例 */
+	public getGame<T extends BaseGame>(index:number=0):T{
+		return <T>this.gameNodes[index].getComponent(BaseGame);
 	}
 
 	private addOpenCount():void{
@@ -65,7 +65,6 @@ export default class App extends Laya.Script{
 	}
 	
 	private initLanguage():void{
-		console.log("language:"+navigator.language);
 		let isCN=navigator.language=="zh-CN";
 		this._language=isCN?Language.CN:Language.EN;
 	}
