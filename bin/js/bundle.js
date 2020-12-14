@@ -77,19 +77,15 @@
             if (this._language == Language.AUTO) {
                 this.initLanguage();
             }
-            console.log("App::onAwake");
+            console.log(Language[0]);
         }
         onEnable() {
-            console.log("App::onEnable");
         }
         onStart() {
-            console.log("App::onStart();");
-            console.log("length:" + this.gameNodes.length);
         }
         onUpdate() {
         }
         onDestroy() {
-            console.log("App::onDestroy();");
         }
         getGame(index = 0) {
             return this.gameNodes[index].getComponent(BaseGame);
@@ -100,7 +96,6 @@
             PlayerPrefs.setInt(key, this._openCount);
         }
         initLanguage() {
-            console.log("language:" + navigator.language);
             let isCN = navigator.language == "zh-CN";
             this._language = isCN ? Language.CN : Language.EN;
         }
@@ -108,14 +103,10 @@
 
     class Game extends BaseGame {
         onAwake() {
-            console.log("Game::onAwake");
         }
         onEnable() {
-            console.log("Game::onEnable");
         }
         onStart() {
-            console.log("Game::onStart");
-            console.log(App.instance.getGame());
         }
     }
 

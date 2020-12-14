@@ -17,7 +17,7 @@ export default class App extends Laya.Script{
 	/** @prop {name:gameNodes,type:Nodes,tips:"游戏节点列表"} */
 	public gameNodes:Laya.Node[];
 	
-
+	//TODO: 设置初始应用程序的语言
 	private _language:Language=Language.AUTO;
 	private _openCount:number;
 	
@@ -39,6 +39,7 @@ export default class App extends Laya.Script{
 		if(this._language==Language.AUTO){
 			this.initLanguage();
 		}
+		console.log(Language[0]);
 	}
 	
 	protected onEnable():void{
