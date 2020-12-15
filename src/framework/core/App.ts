@@ -39,7 +39,6 @@ export default class App extends Laya.Script{
 		if(this._language==Language.AUTO){
 			this.initLanguage();
 		}
-		console.log(Language[0]);
 	}
 	
 	protected onEnable():void{

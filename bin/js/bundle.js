@@ -77,7 +77,6 @@
             if (this._language == Language.AUTO) {
                 this.initLanguage();
             }
-            console.log(Language[0]);
         }
         onEnable() {
         }
@@ -107,9 +106,9 @@
         onEnable() {
         }
         onStart() {
-            var sp = new Laya.Sprite();
-            Laya.stage.addChild(sp);
-            sp.graphics.drawRect(50, 50, 100, 100, "#ff0000");
+            Laya.Scene3D.load('res/LayaScene_Level/Conventional/Level.ls', Laya.Handler.create(null, function (scene) {
+                Laya.stage.addChild(scene);
+            }));
         }
     }
 
