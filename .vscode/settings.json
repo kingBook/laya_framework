@@ -27,6 +27,7 @@
 	  "**/src/ui":true,
 	  "**/src/GameConfig.ts":true,
 	  "**/src/Main.ts":true,
+	  "**/unity_layaEdit":true,
 	 
 	},
 	"editor.autoClosingQuotes": "beforeWhitespace",

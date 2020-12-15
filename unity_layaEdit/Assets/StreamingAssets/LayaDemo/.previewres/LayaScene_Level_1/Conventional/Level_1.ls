@@ -3,44 +3,44 @@
 	"data":{
 		"type":"Scene3D",
 		"props":{
-			"name":"Level",
+			"name":"Level_1",
 			"ambientColor":[
 				0.212,
 				0.227,
 				0.259
 			],
-			"reflectionDecodingFormat":0,
-			"reflection":"Assets/Scenes/LevelGIReflection.ltcb.ls",
+			"reflectionDecodingFormat":1,
+			"reflection":"Assets/Scenes/Level_1GIReflection.ltcb.ls",
 			"reflectionIntensity":1,
 			"ambientMode":1,
 			"ambientSphericalHarmonics":[
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0,
-				0
+				0.1678833,
+				-0.01659219,
+				-0.01137973,
+				0.006569836,
+				0.004985139,
+				-0.00863496,
+				0.009734808,
+				-0.01030069,
+				0.02333598,
+				0.2107354,
+				0.02701576,
+				-0.0188861,
+				0.01090351,
+				0.008416954,
+				-0.01457884,
+				0.01416308,
+				-0.01572332,
+				0.03351187,
+				0.2899403,
+				0.109965,
+				-0.0348096,
+				0.0200939,
+				0.01630429,
+				-0.02824396,
+				0.01814246,
+				-0.02374582,
+				0.04080005
 			],
 			"ambientSphericalHarmonicsIntensity":1,
 			"lightmaps":[],
@@ -166,8 +166,123 @@
 					"castShadow":true,
 					"materials":[
 						{
-							"type":"Laya.BlinnPhongMaterial",
-							"path":"Resources/unity_builtin_extra.lmat"
+							"path":"Assets/Scenes/New Material.lmat"
+						}
+					]
+				},
+				"components":[
+					{
+						"type":"PhysicsCollider",
+						"restitution":0,
+						"friction":0.5,
+						"rollingFriction":0,
+						"shapes":[
+							{
+								"type":"BoxColliderShape",
+								"center":[
+									0,
+									0,
+									0
+								],
+								"size":[
+									1,
+									1,
+									1
+								]
+							}
+						],
+						"isTrigger":false
+					}
+				],
+				"child":[]
+			},
+			{
+				"type":"MeshSprite3D",
+				"instanceID":3,
+				"props":{
+					"name":"Sphere",
+					"active":true,
+					"isStatic":false,
+					"layer":0,
+					"position":[
+						0,
+						0,
+						1.91
+					],
+					"rotation":[
+						0,
+						0,
+						0,
+						-1
+					],
+					"scale":[
+						1,
+						1,
+						1
+					],
+					"meshPath":"Library/unity default resources-Sphere.lm",
+					"enableRender":true,
+					"receiveShadows":true,
+					"castShadow":true,
+					"materials":[
+						{
+							"path":"Assets/Scenes/New Material.lmat"
+						}
+					]
+				},
+				"components":[
+					{
+						"type":"PhysicsCollider",
+						"restitution":0,
+						"friction":0.5,
+						"rollingFriction":0,
+						"shapes":[
+							{
+								"type":"SphereColliderShape",
+								"center":[
+									0,
+									0,
+									0
+								],
+								"radius":0.5
+							}
+						],
+						"isTrigger":false
+					}
+				],
+				"child":[]
+			},
+			{
+				"type":"MeshSprite3D",
+				"instanceID":4,
+				"props":{
+					"name":"Box",
+					"active":true,
+					"isStatic":false,
+					"layer":0,
+					"position":[
+						2.35,
+						0,
+						0.44
+					],
+					"rotation":[
+						0,
+						0,
+						0,
+						-1
+					],
+					"scale":[
+						1,
+						1,
+						1
+					],
+					"meshPath":"Library/unity default resources-Cube.lm",
+					"enableRender":true,
+					"receiveShadows":true,
+					"castShadow":true,
+					"materials":[
+						{
+							"path":"Assets/Scenes/New Material.lmat"
 						}
 					]
 				},
