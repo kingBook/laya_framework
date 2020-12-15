@@ -1,1 +1,8 @@
 .rpt2_cache
+
+unity_layaAirEditor/Library/
+unity_layaAirEditor/Temp/
+unity_layaAirEditor/.vs/
+unity_layaAirEditor/obj/
+unity_layaAirEditor/*.csproj
+unity_layaAirEditor/*.sln

@@ -107,6 +107,9 @@
         onEnable() {
         }
         onStart() {
+            var sp = new Laya.Sprite();
+            Laya.stage.addChild(sp);
+            sp.graphics.drawRect(50, 50, 100, 100, "#ff0000");
         }
     }
 
