@@ -167,7 +167,7 @@
 					"materials":[
 						{
 							"type":"Laya.BlinnPhongMaterial",
-							"path":"Resources/unity_builtin_extra.lmat"
+							"path":"Assets/New Material.lmat"
 						}
 					]
 				},

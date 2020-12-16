@@ -2,7 +2,7 @@
 	"version":"LAYAMATERIAL:02",
 	"props":{
 		"type":"Laya.BlinnPhongMaterial",
-		"name":"Default-Material",
+		"name":"New Material",
 		"renderStates":[
 			{
 				"cull":2,
@@ -23,7 +23,24 @@
 		"normalTextureScale":1,
 		"parallaxTextureScale":0.02,
 		"occlusionTextureStrength":1,
-		"textures":[],
+		"textures":[
+			{
+				"name":"albedoTexture",
+				"path":"dab20f8dgy1g2kstd76dcj20u20u0grt.jpg",
+				"constructParams":[
+					1082,
+					1080,
+					0,
+					true
+				],
+				"propertyParams":{
+					"filterMode":1,
+					"wrapModeU":0,
+					"wrapModeV":0,
+					"anisoLevel":1
+				}
+			}
+		],
 		"vectors":[
 			{
 				"name":"tilingOffset",
@@ -49,7 +66,7 @@
 					0,
 					0,
 					0,
-					0.9999999
+					1
 				]
 			}
 		],
