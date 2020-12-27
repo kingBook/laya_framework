@@ -106,9 +106,9 @@
         onEnable() {
         }
         onStart() {
-            Laya.Scene3D.load('res/LayaScene_Level/Conventional/Level.ls', Laya.Handler.create(null, function (scene) {
-                Laya.stage.addChild(scene);
-            }));
+            let v3 = new Laya.Vector3(1, 1, 1);
+            Laya.Vector3.scale(v3, 0.3, v3);
+            console.log(v3);
         }
     }
 
