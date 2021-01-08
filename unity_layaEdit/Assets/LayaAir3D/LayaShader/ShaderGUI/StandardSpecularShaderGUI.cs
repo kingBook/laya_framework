@@ -15,7 +15,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
         if (oldShader.name == "Standard" || oldShader.name == "Standard (Specular setup)")
         {
 
-            material.SetColor("albedoColor", material.GetColor("_Color"));
+            material.SetColor("_Color", material.GetColor("_Color"));
             material.SetTexture("albedoTexture", material.GetTexture("_MainTex"));
             material.SetFloat("smoothness", material.GetFloat("_Glossiness"));
             material.SetFloat("smoothnessTextureScale", material.GetFloat("_GlossMapScale"));
@@ -37,8 +37,8 @@ public class StandardSpecularShaderGUI : ShaderGUI
             material.SetTexture("parallaxTexture", material.GetTexture("_ParallaxMap"));
             material.SetFloat("occlusionTextureStrength", material.GetFloat("_OcclusionStrength"));
             material.SetTexture("occlusionTexture", material.GetTexture("_OcclusionMap"));
-            material.SetColor("emissionColor", material.GetColor("_EmissionColor"));
-            material.SetTexture("emissionTexture", material.GetTexture("_EmissionMap"));
+            material.SetColor("_EmissionColor", material.GetColor("_EmissionColor"));
+            material.SetTexture("_EmissionMap", material.GetTexture("_EmissionMap"));
         }
         else
         {
@@ -61,7 +61,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
         SpecularAlpha,
         AlbedoAlpha
     }
-    MaterialProperty albedoColor = null;
+    MaterialProperty _Color = null;
     MaterialProperty albedoMap = null;
     MaterialProperty alphaCutoff = null;
     MaterialProperty smoothness = null;
@@ -77,7 +77,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
     MaterialProperty heightMap = null;
     MaterialProperty occlusionStrength = null;
     MaterialProperty occlusionMap = null;
-    MaterialProperty emissionColorForRendering = null;
+    MaterialProperty _EmissionColor = null;
     MaterialProperty emissionMap = null;
     //MaterialProperty detailMask = null;
     //MaterialProperty detailAlbedoMap = null;
@@ -93,7 +93,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
     SmoothnessMapChannel smoothnessMapChannelGUI = SmoothnessMapChannel.SpecularAlpha;
     public void FindProperties(MaterialProperty[] props)
     {
-        albedoColor = FindProperty("albedoColor", props);
+        _Color = FindProperty("_Color", props);
         albedoMap = FindProperty("albedoTexture", props);
         alphaCutoff = FindProperty("_Cutoff", props);
         smoothness = FindProperty("smoothness", props);
@@ -109,8 +109,8 @@ public class StandardSpecularShaderGUI : ShaderGUI
         heightMap = FindProperty("parallaxTexture", props);
         occlusionStrength = FindProperty("occlusionTextureStrength", props);
         occlusionMap = FindProperty("occlusionTexture", props);
-        emissionColorForRendering = FindProperty("emissionColor", props);
-        emissionMap = FindProperty("emissionTexture", props);
+        _EmissionColor = FindProperty("_EmissionColor", props);
+        emissionMap = FindProperty("_EmissionMap", props);
         tilingOffset = FindProperty("tilingOffset", props);
         //detailMask = FindProperty("_DetailMask", props);
         //detailAlbedoMap = FindProperty("_DetailAlbedoMap", props);
@@ -208,7 +208,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
     }
     void DoAlbedoArea(Material material)
     {
-        m_MaterialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, albedoColor);
+        m_MaterialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, _Color);
         if (((BlendMode)material.GetFloat("_Mode") == BlendMode.Cutout))
         {
             m_MaterialEditor.ShaderProperty(alphaCutoff, Styles.alphaCutoffText.text, MaterialEditor.kMiniTextureFieldLabelIndentLevel + 1);
@@ -223,12 +223,12 @@ public class StandardSpecularShaderGUI : ShaderGUI
                 bool hadEmissionTexture = emissionMap.textureValue != null;
 
                 
-            m_MaterialEditor.TexturePropertyWithHDRColor(Styles.emissionText, emissionMap, emissionColorForRendering, false);
+            m_MaterialEditor.TexturePropertyWithHDRColor(Styles.emissionText, emissionMap, _EmissionColor, false);
 
                 
-            float brightness = emissionColorForRendering.colorValue.maxColorComponent;
+            float brightness = _EmissionColor.colorValue.maxColorComponent;
             if (emissionMap.textureValue != null && !hadEmissionTexture && brightness <= 0f)
-                emissionColorForRendering.colorValue = Color.white;
+                _EmissionColor.colorValue = Color.white;
 
                 
              //  m_MaterialEditor.LightmapEmissionFlagsProperty(MaterialEditor.kMiniTextureFieldLabelIndentLevel, true);
@@ -351,7 +351,7 @@ public class StandardSpecularShaderGUI : ShaderGUI
         //SetKeyword(material, "_DETAIL_MULX2", material.GetTexture("_DetailAlbedoMap") || material.GetTexture("_DetailNormalMap"));
       //  MaterialEditor.FixupEmissiveFlag(material);
         bool shouldEmissionBeEnabled = (material.globalIlluminationFlags & MaterialGlobalIlluminationFlags.EmissiveIsBlack) == 0;
-        SetKeyword(material, "EMISSION", shouldEmissionBeEnabled);
+        SetKeyword(material, "_EMISSION", shouldEmissionBeEnabled);
         //if (material.HasProperty("_SmoothnessTextureChannel"))
         //{
         //    SetKeyword(material, "SMOOTHNESSSOURCE_ALBEDOTEXTURE_ALPHA", GetSmoothnessMapChannel(material) == SmoothnessMapChannel.AlbedoAlpha);

@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		albedoColor("Color", Color) = (1,1,1,1)
+		_Color("Color", Color) = (1,1,1,1)
 		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.01
 		albedoTexture("Albedo", 2D) = "white" {}
 		smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
@@ -15,8 +15,8 @@
 		parallaxTexture("Height Map", 2D) = "black" {}
 		occlusionTextureStrength("Strength", Range(0.0, 1.0)) = 1.0
 		occlusionTexture("Occlusion", 2D) = "white" {}
-		emissionColor("Color", Color) = (0,0,0)
-		emissionTexture("Emission", 2D) = "white" {}
+		_EmissionColor("Color", Color) = (0,0,0)
+		_EmissionMap("Emission", 2D) = "white" {}
 		tilingOffset("TillingOffset",Vector) =(1.0,1.0,0.0,0.0)
 		[HideInInspector] _Mode("__mode", Float) = 0.0
 		[HideInInspector] _SrcBlend("__src", Float) = 1.0
@@ -41,7 +41,7 @@
 
 			#pragma shader_feature NORMALTEXTURE
 			#pragma shader_feature _ ALPHATEST TRANSPARENTBLEND
-			#pragma shader_feature EMISSION
+			#pragma shader_feature _EMISSION
 			#pragma shader_feature METALLICGLOSSTEXTURE
 			#pragma shader_feature _ SMOOTHNESSSOURCE_ALBEDOTEXTURE_ALPHA
 			#pragma shader_feature PARALLAXTEXTURE
@@ -86,11 +86,38 @@
 			#pragma vertex vertForwardAdd
 			#pragma fragment fragForwardAddInternal
 			#define LayaStandardPBR  1
+
+			#include "UnityPBSLighting.cginc"
+			#include "AutoLight.cginc"
 			#include "../CGIncludes/LayaStandardcore.cginc"
 
 			ENDCG
 			
 		}
+
+			// ------------------------------------------------------------------
+		 // Extracts information for lightmapping, GI (emission, albedo, ...)
+		 // This pass it not used during regular rendering.
+		 Pass
+		 {
+			 Name "META"
+			 Tags { "LightMode" = "Meta" }
+
+			 Cull Off
+
+			 CGPROGRAM
+			 #pragma vertex vert_meta
+			 #pragma fragment frag_meta
+
+			 #pragma shader_feature _EMISSION
+			 #pragma shader_feature_local _METALLICGLOSSMAP
+			 #pragma shader_feature_local _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+			 #pragma shader_feature_local _DETAIL_MULX2
+			 #pragma shader_feature EDITOR_VISUALIZATION
+
+			 #include "UnityStandardMeta.cginc"
+			 ENDCG
+		 }
     }
 	CustomEditor "PBRStandardShaderGUI"
 	FallBack "Standard"

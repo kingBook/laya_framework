@@ -63,7 +63,7 @@
   <putongVIP>normalUser</putongVIP>
   
   //Version
-  <LayaBoxVersion>LayaBox Version 2.9.0beta</LayaBoxVersion>
+  <LayaBoxVersion>LayaBox Version 2.9.0</LayaBoxVersion>
   <AboutLayaAir>About LayaAir</AboutLayaAir>
   <downloadNodejs>Please download and install nodejs,</downloadNodejs>
   <unity> then restart Unity</unity>

@@ -3,7 +3,7 @@
 	Properties
 	{
 		//主颜色
-		albedoColor("Color", Color) = (1,1,1,1)
+		_Color("Color", Color) = (1,1,1,1)
 		
 		albedoTexture("Albedo", 2D) = "white" {}
 		//alpha裁剪
@@ -30,8 +30,8 @@
 		occlusionTextureStrength("Strength", Range(0.0, 1.0)) = 1.0
 		occlusionTexture("Occlusion", 2D) = "white" {}
 
-		emissionColor("Color", Color) = (0,0,0)
-		emissionTexture("Emission", 2D) = "white" {}
+		_EmissionColor("Color", Color) = (0,0,0)
+		_EmissionMap("Emission", 2D) = "white" {}
 		//tillingOffset
 		tilingOffset("TillingOffset",Vector) =(1.0,1.0,0.0,0.0)
 		//_DetailMask("Detail Mask", 2D) = "white" {}
@@ -65,7 +65,7 @@
 
 			#pragma shader_feature NORMALTEXTURE
 			#pragma shader_feature _ ALPHATEST TRANSPARENTBLEND
-			#pragma shader_feature EMISSION
+			#pragma shader_feature _EMISSION
 			#pragma shader_feature SPECULARGLOSSTEXTURE
 			//#pragma shader_feature ___ _DETAIL_MULX2
 			#pragma shader_feature _ SMOOTHNESSSOURCE_ALBEDOTEXTURE_ALPHA

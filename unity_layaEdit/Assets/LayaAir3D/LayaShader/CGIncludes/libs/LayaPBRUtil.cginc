@@ -78,10 +78,10 @@ inline float3 LayaPerPixelWorldNormal(float4 i_tex, float4 tangentToWorld[3])
 
 half3 LayaEmission(float2 uv)
 {
-#ifndef EMISSION
+#ifndef _EMISSION
 	return 0;
 #else
-	return tex2D(emissionTexture, uv).rgb * emissionColor.rgb;
+	return tex2D(_EmissionMap, uv).rgb * _EmissionColor.rgb;
 #endif
 }
 
@@ -133,15 +133,15 @@ float4 LayaParallax(float4 texcoords, half3 viewDir)
 half LayaAlpha(float2 uv)
 {
 #if defined(SMOOTHNESSSOURCE_ALBEDOTEXTURE_ALPHA)
-	return albedoColor.a;
+	return _Color.a;
 #else
-	return tex2D(albedoTexture, uv).a * albedoColor.a;
+	return tex2D(albedoTexture, uv).a * _Color.a;
 #endif
 }
 
 half3 LayaAlbedo(float4 texcoords)
 {
-	half3 albedo = albedoColor.rgb * tex2D(albedoTexture, texcoords.xy).rgb;
+	half3 albedo = _Color.rgb * tex2D(albedoTexture, texcoords.xy).rgb;
 	return albedo;
 }
 
@@ -375,10 +375,10 @@ inline LayaGI LayaGI_Base(LayaGIInput data, half occlusion, half3 normalWorld)
 		fixed4 bakedDirTex = UNITY_SAMPLE_TEX2D_SAMPLER(unity_LightmapInd, unity_Lightmap, data.lightmapUV.xy);
 		o_gi.indirect.diffuse += DecodeDirectionalLightmap(bakedColor, bakedDirTex, normalWorld);
 
-		#if defined(LIGHTMAP_SHADOW_MIXING) && !defined(SHADOWS_SHADOWMASK) && defined(SHADOWS_SCREEN)
-			ResetUnityLight(o_gi.light);
-			o_gi.indirect.diffuse = SubtractMainLightWithRealtimeAttenuationFromLightmap(o_gi.indirect.diffuse, data.atten, bakedColorTex, normalWorld);
-		#endif
+		// #if defined(LIGHTMAP_SHADOW_MIXING) && !defined(SHADOWS_SHADOWMASK) && defined(SHADOWS_SCREEN)
+		// 	ResetUnityLight(o_gi.light);
+		// 	o_gi.indirect.diffuse = SubtractMainLightWithRealtimeAttenuationFromLightmap(o_gi.indirect.diffuse, data.atten, bakedColorTex, normalWorld);
+		// #endif
 
 	#else 
 		o_gi.indirect.diffuse += bakedColor;

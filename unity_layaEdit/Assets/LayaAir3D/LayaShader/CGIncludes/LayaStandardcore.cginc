@@ -12,7 +12,7 @@
 #endif
 
 
-half4       albedoColor;
+half4       _Color;
 half        _Cutoff;
 
 sampler2D   albedoTexture;
@@ -41,8 +41,8 @@ half        occlusionTextureStrength;
 sampler2D   parallaxTexture;
 half        parallaxTextureScale;
 
-half4       emissionColor;
-sampler2D   emissionTexture;
+half4       _EmissionColor;
+sampler2D   _EmissionMap;
 
 
 

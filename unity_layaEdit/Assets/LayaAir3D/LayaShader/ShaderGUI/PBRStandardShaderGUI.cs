@@ -20,7 +20,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
         if (oldShader.name == "Standard" || oldShader.name == "Standard (Specular setup)")
         {
 
-            material.SetColor("albedoColor", material.GetColor("_Color"));
+            material.SetColor("_Color", material.GetColor("_Color"));
             material.SetTexture("albedoTexture", material.GetTexture("_MainTex"));
             material.SetFloat("smoothness", material.GetFloat("_Glossiness"));
             material.SetFloat("smoothnessTextureScale", material.GetFloat("_GlossMapScale"));
@@ -44,8 +44,8 @@ internal class PBRStandardShaderGUI : ShaderGUI
             material.SetTexture("parallaxTexture", material.GetTexture("_ParallaxMap"));
             material.SetFloat("occlusionTextureStrength", material.GetFloat("_OcclusionStrength"));
             material.SetTexture("occlusionTexture", material.GetTexture("_OcclusionMap"));
-            material.SetColor("emissionColor", material.GetColor("_EmissionColor"));
-            material.SetTexture("emissionTexture", material.GetTexture("_EmissionMap"));
+            material.SetColor("_EmissionColor", material.GetColor("_EmissionColor"));
+            material.SetTexture("_EmissionMap", material.GetTexture("_EmissionMap"));
         }
         else
         {
@@ -108,7 +108,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
 
     MaterialProperty blendMode = null;
     MaterialProperty albedoMap = null;
-    MaterialProperty albedoColor = null;
+    MaterialProperty _Color = null;
     MaterialProperty alphaCutoff = null;
 
     MaterialProperty metallicMap = null;
@@ -124,7 +124,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
     MaterialProperty occlusionMap = null;
     MaterialProperty heigtMapScale = null;
     MaterialProperty heightMap = null;
-    MaterialProperty emissionColorForRendering = null;
+    MaterialProperty _EmissionColor = null;
     MaterialProperty emissionMap = null;
     //MaterialProperty detailMask = null;
     //MaterialProperty detailAlbedoMap = null;
@@ -140,7 +140,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
     SmoothnessMapChannel smoothnessMapChannelGUI = SmoothnessMapChannel.MetallicAlpha;
     public void FindProperties(MaterialProperty[] props)
     {
-        albedoColor = FindProperty("albedoColor", props);
+        _Color = FindProperty("_Color", props);
         albedoMap = FindProperty("albedoTexture", props);
         alphaCutoff = FindProperty("_Cutoff", props);
         smoothness = FindProperty("smoothness", props);
@@ -156,8 +156,8 @@ internal class PBRStandardShaderGUI : ShaderGUI
         heightMap = FindProperty("parallaxTexture", props);
         occlusionStrength = FindProperty("occlusionTextureStrength", props);
         occlusionMap = FindProperty("occlusionTexture", props);
-        emissionColorForRendering = FindProperty("emissionColor", props);
-        emissionMap = FindProperty("emissionTexture", props);
+        _EmissionColor = FindProperty("_EmissionColor", props);
+        emissionMap = FindProperty("_EmissionMap", props);
         tilingOffset = FindProperty("tilingOffset",props);
         //detailMask = FindProperty("_DetailMask", props);
         //detailAlbedoMap = FindProperty("_DetailAlbedoMap", props);
@@ -281,7 +281,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
 
     void DoAlbedoArea(Material material)
     {
-        m_MaterialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, albedoColor);
+        m_MaterialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, _Color);
         if (((BlendMode)material.GetFloat("_Mode") == BlendMode.Cutout))
         {
             m_MaterialEditor.ShaderProperty(alphaCutoff, Styles.alphaCutoffText.text, MaterialEditor.kMiniTextureFieldLabelIndentLevel + 1);
@@ -296,15 +296,15 @@ internal class PBRStandardShaderGUI : ShaderGUI
             bool hadEmissionTexture = emissionMap.textureValue != null;
 
             // Texture and HDR color controls
-            m_MaterialEditor.TexturePropertyWithHDRColor(Styles.emissionText, emissionMap, emissionColorForRendering, false);
+            m_MaterialEditor.TexturePropertyWithHDRColor(Styles.emissionText, emissionMap, _EmissionColor, false);
 
             // If texture was assigned and color was black set color to white
-            float brightness = emissionColorForRendering.colorValue.maxColorComponent;
+            float brightness = _EmissionColor.colorValue.maxColorComponent;
             if (emissionMap.textureValue != null && !hadEmissionTexture && brightness <= 0f)
-                emissionColorForRendering.colorValue = Color.white;
-
+                _EmissionColor.colorValue = Color.white;
+            material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
             // change the GI flag and fix it up with emissive as black if necessary
-           // m_MaterialEditor.LightmapEmissionFlagsProperty(MaterialEditor.kMiniTextureFieldLabelIndentLevel, true);
+            m_MaterialEditor.LightmapEmissionFlagsProperty(MaterialEditor.kMiniTextureFieldLabelIndentLevel, true);
         }
     }
 
@@ -425,7 +425,7 @@ internal class PBRStandardShaderGUI : ShaderGUI
         // The fixup routine makes sure that the material is in the correct state if/when changes are made to the mode or color.
         //MaterialEditor.FixupEmissiveFlag(material);
         bool shouldEmissionBeEnabled = (material.globalIlluminationFlags & MaterialGlobalIlluminationFlags.EmissiveIsBlack) == 0;
-        SetKeyword(material, "EMISSION", shouldEmissionBeEnabled);
+        SetKeyword(material, "_EMISSION", shouldEmissionBeEnabled);
 
         if (material.HasProperty("_SmoothnessTextureChannel"))
         {

@@ -27,14 +27,16 @@
     <IgnoreNotActiveGameObject>False</IgnoreNotActiveGameObject>
     <OptimizeGameObject>False</OptimizeGameObject>
     <BatchMade>False</BatchMade>
-    <OtherSetting>True</OtherSetting>
+    <OtherSetting>False</OtherSetting>
     <CoverOriginalFile>True</CoverOriginalFile>
-    <CustomizeDirectory>True</CustomizeDirectory>
-    <CustomizeDirectoryName>unityExport</CustomizeDirectoryName>
+    <CustomizeDirectory>False</CustomizeDirectory>
+    <CustomizeDirectoryName>
+    </CustomizeDirectoryName>
     <Ios>False</Ios>
     <Android>False</Android>
     <Conventional>True</Conventional>
-    <SavePath>../bin/res</SavePath>
+    <SavePath>
+    </SavePath>
     <ScrollPositionY>0</ScrollPositionY>
   </config1>
   <config2>
@@ -189,8 +191,8 @@
     </SavePath>
     <ScrollPositionY>0</ScrollPositionY>
   </config5>
-  <language>0</language>
-  <time>1608120065</time>
+  <language>1</language>
+  <time>1610078113</time>
   <saveAcount>
   </saveAcount>
   <savePassWorld>

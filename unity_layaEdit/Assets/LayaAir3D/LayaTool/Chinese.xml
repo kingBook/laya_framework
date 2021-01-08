@@ -65,7 +65,7 @@
   <putongVIP>普通用户</putongVIP>
 
   //Version
-  <LayaBoxVersion>LayaBox 版 本 2.9.0beta</LayaBoxVersion>
+  <LayaBoxVersion>LayaBox 版 本 2.9.0</LayaBoxVersion>
   <AboutLayaAir> 关 于 LayaAir</AboutLayaAir>
   <downloadNodejs> 请 下 载 和 安 装 NodeJs,</downloadNodejs>
   <unity> 然 后 重 新 启 动 Unity</unity>
