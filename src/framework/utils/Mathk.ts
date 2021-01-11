@@ -1,7 +1,8 @@
 import Mathf from "./Mathf";
-
 /** 数学类 */
 export default class Mathk{
+	
+	private static _tempV3=new Laya.Vector3;
 	
 	/**
 	 * 将任意角度转换为[-180°,180°]，并返回转换后的角度
@@ -87,13 +88,20 @@ export default class Mathk{
 		Laya.Vector3.add(lineStart,vector2,vector2);
 		return vector2;
 	}
-/*
-	/// <summary> 点到线段的最小距离（垂足不超出线段） </summary>
-	public static float DistancePointLine(Vector3 point,Vector3 lineStart,Vector3 lineEnd){
-		return Vector3.Magnitude(ProjectPointLine(point,lineStart,lineEnd)-point);
+
+	/**
+	 * 点到线段的最小距离（垂足不超出线段）
+	 * @param point 
+	 * @param lineStart 
+	 * @param lineEnd 
+	 */
+	public static DistancePointLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):number{
+		Laya.Vector3.subtract(this.projectPointLine(point,lineStart,lineEnd),point,this._tempV3);
+		let length=Laya.Vector3.scalarLength(this._tempV3);
+		return length;
 	}
 	
-	/// <summary>
+	/*/// <summary>
 	/// 获取点距离顶点列表的最近的线段的索引（顺时针方向查找），当顶点列表长度小于2时返回(-1,-1)
 	/// </summary>
 	/// <param name="point">点</param>
@@ -117,9 +125,9 @@ export default class Mathk{
 			}
 		}
 		return result;
-	}
+	}*/
 	
-	/// <summary>
+	/*/// <summary>
 	/// 获取射线发射方向与顶点列表相交的所有线段中，射线原点与交点距离最近的线段索引顺时针方向查找），当顶点列表长度小于2时返回(-1,-1)。
 	/// 注意：使用此方法必须保证顶点列表中的所有顶点与及射线的原点和方向都在同一个平面上
 	/// </summary>
@@ -152,30 +160,37 @@ export default class Mathk{
 			}
 		}
 		return result;
-	}
+	}*/
 
-	/// <summary>
-	/// 获取两条直线的交点。如果直线相交，则返回true，否则返回false。
-	/// 注意：使用此方法必须两直线都在同一个平面上
-	/// </summary>
-	public static bool GetTwoLineIntersection(Vector3 lineStart1,Vector3 lineDirection1,Vector3 lineStart2,Vector3 lineDirection2,out Vector3 intersection){
-		Vector3 lineVec3=lineStart2-lineStart1;
-		Vector3 crossVec1and2=Vector3.Cross(lineDirection1,lineDirection2);
-		Vector3 crossVec3and2=Vector3.Cross(lineVec3,lineDirection2);
+	/**
+	 * 获取两条直线的交点。如果直线相交，则返回true，否则返回false。
+	 * 注意：使用此方法必须两直线都在同一个平面上
+	 * @param lineStart1 
+	 * @param lineDirection1 
+	 * @param lineStart2 
+	 * @param lineDirection2 
+	 * @param outIntersection 输出的交点
+	 */
+	public static GetTwoLineIntersection(lineStart1:Laya.Vector3,lineDirection1:Laya.Vector3,lineStart2:Laya.Vector3,lineDirection2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
+		let lineVec3=new Laya.Vector3();
+		Laya.Vector3.subtract(lineStart2,lineStart1,lineVec3);
+		let crossVec1and2=new Laya.Vector3();
+		Laya.Vector3.cross(lineDirection1,lineDirection2,crossVec1and2);
+		let crossVec3and2=new Laya.Vector3();
+		Laya.Vector3.cross(lineVec3,lineDirection2,crossVec3and2);
 
-		float planarFactor=Vector3.Dot(lineVec3,crossVec1and2);
+		let planarFactor=Laya.Vector3.dot(lineVec3,crossVec1and2);
 		//在同一个平面，且不平行
-		if(Mathf.Abs(planarFactor)<0.0001f && crossVec1and2.sqrMagnitude>0.0001f){
-			float s=Vector3.Dot(crossVec3and2,crossVec1and2) / crossVec1and2.sqrMagnitude;
-			intersection=lineStart1 + (lineDirection1*s);
+		if(Math.abs(planarFactor)<0.0001 && Laya.Vector3.scalarLengthSquared(crossVec1and2)>0.0001){
+			let s=Laya.Vector3.dot(crossVec3and2,crossVec1and2) / Laya.Vector3.scalarLengthSquared(crossVec1and2);
+			Laya.Vector3.scale(lineDirection1,s,this._tempV3);
+			Laya.Vector3.add(lineStart1,this._tempV3,outIntersection);
 			return true;
-		}else{
-			intersection=Vector3.zero;
-			return false;
 		}
+		return false;
 	}
 
-	/// <summary> 输出3D空间中不平行的两条直线距离彼此最近的两个点，如果两条直线不平行则返回True </summary>
+	/*/// <summary> 输出3D空间中不平行的两条直线距离彼此最近的两个点，如果两条直线不平行则返回True </summary>
 	public static bool GetClosestPointsOnTwo3DLines(Vector3 lineStart1,Vector3 lineDirection1,Vector3 lineStart2,Vector3 lineDirection2,out Vector3 closestPointLine1,out Vector3 closestPointLine2){
 		closestPointLine1=Vector3.zero;
 		closestPointLine2=Vector3.zero;
@@ -201,9 +216,9 @@ export default class Mathk{
 		}else{
 			return false;
 		}
-	} 
+	} */
 
-	/// <summary>
+	/*/// <summary>
 	/// 此函数用于找出点位于线段的哪一侧。
 	/// 假设该点位于由 linePoint1 和 linePoint2 创建的直线上。如果这个点不在线段，
 	/// 首先使用 ProjectPointLine() 将其投影到线上。
@@ -232,5 +247,22 @@ export default class Mathk{
 			return 1;
 		}
 	}*/
+	
+	/**
+	 * 计算点在线段的哪一侧，-1:在左侧; 0:共线; 1:在右侧;
+	 * @param point 点
+	 * @param lineStart 线段起始点
+	 * @param lineEnd 线段结束点
+	 */
+	public static pointOnLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):number{
+		let a=new Laya.Vector3();
+		let b=new Laya.Vector3();
+		let crossValue=new Laya.Vector3();
+		//求叉积
+		Laya.Vector3.subtract(point,lineStart,a);
+		Laya.Vector3.subtract(lineEnd,lineStart,b);
+		Laya.Vector3.cross(a,b,crossValue);
+		return crossValue.z;
+	}
 	
 }
