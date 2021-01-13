@@ -95,7 +95,7 @@ export default class Mathk{
 	 * @param lineStart 
 	 * @param lineEnd 
 	 */
-	public static DistancePointLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):number{
+	public static distancePointLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):number{
 		Laya.Vector3.subtract(this.projectPointLine(point,lineStart,lineEnd),point,this._tempV3);
 		let length=Laya.Vector3.scalarLength(this._tempV3);
 		return length;
@@ -171,7 +171,7 @@ export default class Mathk{
 	 * @param lineDirection2 
 	 * @param outIntersection 输出的交点
 	 */
-	public static GetTwoLineIntersection(lineStart1:Laya.Vector3,lineDirection1:Laya.Vector3,lineStart2:Laya.Vector3,lineDirection2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
+	public static getTwoLineIntersection(lineStart1:Laya.Vector3,lineDirection1:Laya.Vector3,lineStart2:Laya.Vector3,lineDirection2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
 		let lineVec3=new Laya.Vector3();
 		Laya.Vector3.subtract(lineStart2,lineStart1,lineVec3);
 		let crossVec1and2=new Laya.Vector3();
@@ -189,34 +189,90 @@ export default class Mathk{
 		}
 		return false;
 	}
+	
+	/**
+	 * 输出3D空间中不平行的两条直线距离彼此最近的两个点，如果两条直线不平行则返回 true
+	 * @param lineStart1 
+	 * @param lineEnd1 
+	 * @param lineStart2 
+	 * @param lineEnd2 
+	 * @param outClosestPointLine1 
+	 * @param outClosestPointLine2 
+	 */
+	public static getClosestPointsOnTwo3DLines(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outClosestPointLine1:Laya.Vector3,outClosestPointLine2:Laya.Vector3):boolean{
+		let lineDirection1=new Laya.Vector3();
+		let lineDirection2=new Laya.Vector3();
+		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
+		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
+		
+		let a=Laya.Vector3.dot(lineDirection1,lineDirection1);
+		let b=Laya.Vector3.dot(lineDirection1,lineDirection2);
+		let e=Laya.Vector3.dot(lineDirection2,lineDirection2);
 
-	/*/// <summary> 输出3D空间中不平行的两条直线距离彼此最近的两个点，如果两条直线不平行则返回True </summary>
-	public static bool GetClosestPointsOnTwo3DLines(Vector3 lineStart1,Vector3 lineDirection1,Vector3 lineStart2,Vector3 lineDirection2,out Vector3 closestPointLine1,out Vector3 closestPointLine2){
-		closestPointLine1=Vector3.zero;
-		closestPointLine2=Vector3.zero;
-
-		float a=Vector3.Dot(lineDirection1,lineDirection1);
-		float b=Vector3.Dot(lineDirection1,lineDirection2);
-		float e=Vector3.Dot(lineDirection2,lineDirection2);
-
-		float d=a*e - b*b;
+		let d=a*e - b*b;
 
 		//线段不平行
-		if(d!=0.0f){
-			Vector3 r=lineStart1-lineStart2;
-			float c=Vector3.Dot(lineDirection1,r);
-			float f=Vector3.Dot(lineDirection2,r);
+		if(d!=0){
+			let r=new Laya.Vector3();
+			Laya.Vector3.subtract(lineStart1,lineStart2,r);
+			let c=Laya.Vector3.dot(lineDirection1,r);
+			let f=Laya.Vector3.dot(lineDirection2,r);
 
-			float s=(b*f-c*e)/d;
-			float t=(a*f-c*b)/d;
-
-			closestPointLine1=lineStart1+lineDirection1*s;
-			closestPointLine2=lineStart2+lineDirection2*t;
+			let s=(b*f-c*e)/d;
+			let t=(a*f-c*b)/d;
+			
+			Laya.Vector3.scale(lineDirection1,s,lineDirection1);
+			Laya.Vector3.add(lineStart1,lineDirection1,outClosestPointLine1);
+			
+			Laya.Vector3.scale(lineDirection2,t,lineDirection2);
+			Laya.Vector3.add(lineStart2,lineDirection2,outClosestPointLine2);
 			return true;
-		}else{
-			return false;
 		}
-	} */
+		return false;
+	}
+	
+	/**
+	 * 输出3D空间中不平行的两条线段彼此最近的两个点，如果两条线段不平行且有交点则返回 true
+	 * @param lineStart1 
+	 * @param lineEnd1 
+	 * @param lineStart2 
+	 * @param lineEnd2 
+	 * @param outClosestPointLine1 
+	 * @param outClosestPointLine2 
+	 */
+	public static getClosestPointsOnTwo3DLineSegments(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outClosestPointLine1:Laya.Vector3,outClosestPointLine2:Laya.Vector3):boolean{
+		let lineDirection1=new Laya.Vector3();
+		let lineDirection2=new Laya.Vector3();
+		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
+		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
+		
+		let a=Laya.Vector3.dot(lineDirection1,lineDirection1);
+		let b=Laya.Vector3.dot(lineDirection1,lineDirection2);
+		let e=Laya.Vector3.dot(lineDirection2,lineDirection2);
+
+		let d=a*e - b*b;
+
+		//线段不平行
+		if(d!=0){
+			let r=new Laya.Vector3();
+			Laya.Vector3.subtract(lineStart1,lineStart2,r);
+			let c=Laya.Vector3.dot(lineDirection1,r);
+			let f=Laya.Vector3.dot(lineDirection2,r);
+
+			let s=(b*f-c*e)/d;
+			let t=(a*f-c*b)/d;
+			
+			if(s>=-1&&s<=0 && t>=-1&&t<=0){
+				Laya.Vector3.scale(lineDirection1,s,lineDirection1);
+				Laya.Vector3.add(lineStart1,lineDirection1,outClosestPointLine1);
+				
+				Laya.Vector3.scale(lineDirection2,t,lineDirection2);
+				Laya.Vector3.add(lineStart2,lineDirection2,outClosestPointLine2);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/*/// <summary>
 	/// 此函数用于找出点位于线段的哪一侧。
