@@ -1,9 +1,16 @@
 import Mathf from "./Mathf";
+import Vector3Util from "./Vector3Util";
 /** 数学类 */
 export default class Mathk{
 	
-	private static _tempV3=new Laya.Vector3;
-	
+	private static _tempV3=new Laya.Vector3();
+	private static _temp1V3=new Laya.Vector3();
+	private static _temp2V3=new Laya.Vector3();
+	private static _temp3V3=new Laya.Vector3();
+	private static _temp4V3=new Laya.Vector3();
+	private static _temp5V3=new Laya.Vector3();
+	private static _lineDirection1=new Laya.Vector3();
+	private static _lineDirection2=new Laya.Vector3();
 	/**
 	 * 将任意角度转换为[-180°,180°]，并返回转换后的角度
 	 * @param rotation 需要转换的角度
@@ -45,10 +52,10 @@ export default class Mathk{
 	 * 获取点在线段的垂足（垂足会超出线段）
 	 */
 	public static getPerpendicularPoint(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):Laya.Vector3{
-		let rhs=new Laya.Vector3();
+		let rhs=this._tempV3;
 		Laya.Vector3.subtract(point,lineStart,rhs);
 		
-		let vector=new Laya.Vector3();
+		let vector=this._temp2V3;
 		Laya.Vector3.subtract(lineEnd,lineStart,vector);
 		
 		let magnitude=Laya.Vector3.scalarLength(vector);
@@ -70,10 +77,10 @@ export default class Mathk{
 	 * @param lineEnd 
 	 */
 	public static projectPointLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):Laya.Vector3{
-		let rhs=new Laya.Vector3();
+		let rhs=this._tempV3;
 		Laya.Vector3.subtract(point,lineStart,rhs);
 		
-		let vector=new Laya.Vector3();
+		let vector=this._temp2V3;
 		Laya.Vector3.subtract(lineEnd,lineStart,vector);
 		
 		let magnitude=Laya.Vector3.scalarLength(vector);
@@ -164,29 +171,84 @@ export default class Mathk{
 
 	/**
 	 * 获取两条直线的交点。如果直线相交，则返回true，否则返回false。
-	 * 注意：使用此方法必须两直线都在同一个平面上
+	 * 注意：使用此方法必须两直线都在同一个平面上，交点会超出线段范围
 	 * @param lineStart1 
-	 * @param lineDirection1 
+	 * @param lineEnd1 
 	 * @param lineStart2 
-	 * @param lineDirection2 
+	 * @param lineEnd2 
 	 * @param outIntersection 输出的交点
 	 */
-	public static getTwoLineIntersection(lineStart1:Laya.Vector3,lineDirection1:Laya.Vector3,lineStart2:Laya.Vector3,lineDirection2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
-		let lineVec3=new Laya.Vector3();
+	public static getTwoLineIntersection(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
+		let lineDirection1=this._lineDirection1;
+		let lineDirection2=this._lineDirection2;
+		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
+		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
+		
+		let lineVec3=this._tempV3;
 		Laya.Vector3.subtract(lineStart2,lineStart1,lineVec3);
-		let crossVec1and2=new Laya.Vector3();
+		let crossVec1and2=this._temp1V3;
 		Laya.Vector3.cross(lineDirection1,lineDirection2,crossVec1and2);
-		let crossVec3and2=new Laya.Vector3();
+		let crossVec3and2=this._temp2V3;
 		Laya.Vector3.cross(lineVec3,lineDirection2,crossVec3and2);
 
 		let planarFactor=Laya.Vector3.dot(lineVec3,crossVec1and2);
 		//在同一个平面，且不平行
 		if(Math.abs(planarFactor)<0.0001 && Laya.Vector3.scalarLengthSquared(crossVec1and2)>0.0001){
 			let s=Laya.Vector3.dot(crossVec3and2,crossVec1and2) / Laya.Vector3.scalarLengthSquared(crossVec1and2);
-			Laya.Vector3.scale(lineDirection1,s,this._tempV3);
-			Laya.Vector3.add(lineStart1,this._tempV3,outIntersection);
+			Laya.Vector3.scale(lineDirection1,s,this._temp3V3);
+			Laya.Vector3.add(lineStart1,this._temp3V3,outIntersection);
 			return true;
 		}
+		return false;
+	}
+	
+	/**
+	 * 获取两条线段的交点。如果线段相交，则返回true，否则返回false。
+	 * 注意：使用此方法必须两线段都在同一个平面上，交点不会超出线段范围
+	 * @param lineStart1 
+	 * @param lineEnd1 
+	 * @param lineStart2 
+	 * @param lineEnd2 
+	 * @param outIntersection 输出的交点
+	 */
+	public static getTwoLineSegmentsIntersection(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outIntersection:Laya.Vector3):boolean{
+		let lineDirection1=this._lineDirection1;
+		let lineDirection2=this._lineDirection2;
+		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
+		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
+		
+		let lineVec3=this._tempV3;
+		Laya.Vector3.subtract(lineStart2,lineStart1,lineVec3);
+		let crossVec1and2=this._temp1V3;
+		Laya.Vector3.cross(lineDirection1,lineDirection2,crossVec1and2);
+		let crossVec3and2=this._temp2V3;
+		Laya.Vector3.cross(lineVec3,lineDirection2,crossVec3and2);
+
+		let planarFactor=Laya.Vector3.dot(lineVec3,crossVec1and2);
+		//在同一个平面，且不平行
+		if(Math.abs(planarFactor)<0.0001 && Laya.Vector3.scalarLengthSquared(crossVec1and2)>0.0001){
+			let s=Laya.Vector3.dot(crossVec3and2,crossVec1and2) / Laya.Vector3.scalarLengthSquared(crossVec1and2);
+			let isInLineSegment1=s>=-1&&s<=0;
+			if(isInLineSegment1){
+				Laya.Vector3.scale(lineDirection1,s,this._temp3V3);
+				Laya.Vector3.add(lineStart1,this._temp3V3,outIntersection);
+				
+				let lineSegment2Min=this._temp4V3;
+				let lineSegment2Max=this._temp5V3;
+				Vector3Util.min(lineStart2,lineEnd2,lineSegment2Min);
+				Vector3Util.max(lineStart2,lineEnd2,lineSegment2Max);
+				let isInLineSegment2=outIntersection.x>=lineSegment2Min.x && 
+									 outIntersection.y>=lineSegment2Min.y &&
+									 outIntersection.z>=lineSegment2Min.z &&
+									 outIntersection.x<=lineSegment2Max.x && 
+									 outIntersection.y<=lineSegment2Max.y &&
+									 outIntersection.z<=lineSegment2Max.z;
+				if(isInLineSegment2){ 
+					return true;
+				}
+			}
+		}
+		//console.log("line2Distance",Laya.Vector3.distance(lineStart2,lineEnd2));
 		return false;
 	}
 	
@@ -200,8 +262,8 @@ export default class Mathk{
 	 * @param outClosestPointLine2 
 	 */
 	public static getClosestPointsOnTwo3DLines(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outClosestPointLine1:Laya.Vector3,outClosestPointLine2:Laya.Vector3):boolean{
-		let lineDirection1=new Laya.Vector3();
-		let lineDirection2=new Laya.Vector3();
+		let lineDirection1=this._lineDirection1;
+		let lineDirection2=this._lineDirection2;
 		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
 		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
 		
@@ -213,7 +275,7 @@ export default class Mathk{
 
 		//线段不平行
 		if(d!=0){
-			let r=new Laya.Vector3();
+			let r=this._tempV3;
 			Laya.Vector3.subtract(lineStart1,lineStart2,r);
 			let c=Laya.Vector3.dot(lineDirection1,r);
 			let f=Laya.Vector3.dot(lineDirection2,r);
@@ -241,8 +303,8 @@ export default class Mathk{
 	 * @param outClosestPointLine2 
 	 */
 	public static getClosestPointsOnTwo3DLineSegments(lineStart1:Laya.Vector3,lineEnd1:Laya.Vector3,lineStart2:Laya.Vector3,lineEnd2:Laya.Vector3,outClosestPointLine1:Laya.Vector3,outClosestPointLine2:Laya.Vector3):boolean{
-		let lineDirection1=new Laya.Vector3();
-		let lineDirection2=new Laya.Vector3();
+		let lineDirection1=this._lineDirection1;
+		let lineDirection2=this._lineDirection2;
 		Laya.Vector3.subtract(lineStart1,lineEnd1,lineDirection1);
 		Laya.Vector3.subtract(lineStart2,lineEnd2,lineDirection2);
 		
@@ -254,7 +316,7 @@ export default class Mathk{
 
 		//线段不平行
 		if(d!=0){
-			let r=new Laya.Vector3();
+			let r=this._tempV3;
 			Laya.Vector3.subtract(lineStart1,lineStart2,r);
 			let c=Laya.Vector3.dot(lineDirection1,r);
 			let f=Laya.Vector3.dot(lineDirection2,r);
@@ -313,7 +375,7 @@ export default class Mathk{
 	public static pointOnLine(point:Laya.Vector3,lineStart:Laya.Vector3,lineEnd:Laya.Vector3):number{
 		let a=new Laya.Vector3();
 		let b=new Laya.Vector3();
-		let crossValue=new Laya.Vector3();
+		let crossValue=this._tempV3;
 		//求叉积
 		Laya.Vector3.subtract(point,lineStart,a);
 		Laya.Vector3.subtract(lineEnd,lineStart,b);
