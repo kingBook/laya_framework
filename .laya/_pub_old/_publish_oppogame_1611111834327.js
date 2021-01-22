@@ -1,4 +1,4 @@
-// v1.8.5
+// v1.8.2
 const ideModuleDir = global.ideModuleDir;
 const workSpaceDir = global.workSpaceDir;
 
@@ -339,15 +339,11 @@ gulp.task("pushRPK_OPPO", ["buildRPK_OPPO"], function() {
 	// 在OPPO轻游戏项目目录中执行:
     // adb push dist/game.rpk sdcard/games
 	// adb push layarepublicPath/oppo/instant_app_settings.properties
-	// adb shell am force-stop com.nearme.instant.platform
 	// adb shell am start -n com.nearme.instant.platform/com.oppo.autotest.main.InstantAppActivity
 	return new Promise((resolve, reject) => {
-		if (!config.oppoInfo.subpack) {
-			return resolve();
-		}
-		
 		let cmd = `${adbPath}`;
-		let args = ["shell", "mkdir", `sdcard/Android/data/com.nearme.instant.platform/files/subPkg`];
+		let sdGamesPath = config.oppoInfo.subpack ? "sdcard/subPkg" : "sdcard/games";
+		let args = ["push", `dist/${config.oppoInfo.package}${config.oppoInfo.useReleaseSign ? ".signed" : ""}.rpk`, sdGamesPath];
 		let opts = {
 			cwd: projDir,
 			shell: true
@@ -364,42 +360,17 @@ gulp.task("pushRPK_OPPO", ["buildRPK_OPPO"], function() {
 		});
 
 		cp.on('close', (code) => {
-			console.log(`pre) push_RPK 子进程退出码：${code}`);
+			console.log(`1) push_RPK 子进程退出码：${code}`);
 			resolve();
 		});
-	}).then(() => {
-		return new Promise((resolve, reject) => {
-			let cmd = `${adbPath}`;
-			let sdGamesPath = config.oppoInfo.subpack ? "sdcard/Android/data/com.nearme.instant.platform/files/subPkg" : "sdcard/games";
-			let args = ["push", `dist/${config.oppoInfo.package}${config.oppoInfo.useReleaseSign ? ".signed" : ""}.rpk`, sdGamesPath];
-			let opts = {
-				cwd: projDir,
-				shell: true
-			};
-			let cp = childProcess.spawn(cmd, args, opts);
-			// let cp = childProcess.spawn('npx.cmd', ['-v']);
-			cp.stdout.on('data', (data) => {
-				console.log(`stdout: ${data}`);
-			});
-	
-			cp.stderr.on('data', (data) => {
-				console.log(`stderr: ${data}`);
-				// reject();
-			});
-	
-			cp.on('close', (code) => {
-				console.log(`1) push_RPK 子进程退出码：${code}`);
-				resolve();
-			});
-		})
 	}).then(() => {
 		return new Promise((resolve, reject) => {
 			// 如果是分包，需要修改里面的内容
 			let oppoPropPath = path.join(layarepublicPath, "oppo", "instant_app_settings.properties");
 			if (config.oppoInfo.subpack) {
-				fs.writeFileSync(oppoPropPath, "default_tab=game_split", "utf8");
+				fs.writeFileSync(oppoPropPath, "default_tab_index=4", "utf8");
 			} else {
-				fs.writeFileSync(oppoPropPath, "default_tab=game", "utf8");
+				fs.writeFileSync(oppoPropPath, "default_tab_index=2", "utf8");
 			}
 			let cmd = `${adbPath}`;
 			let args = ["push", oppoPropPath, "sdcard/"];
@@ -426,30 +397,6 @@ gulp.task("pushRPK_OPPO", ["buildRPK_OPPO"], function() {
 	}).then(() => {
 		return new Promise((resolve, reject) => {
 			let cmd = `${adbPath}`;
-			let args = ["shell", "am", "force-stop", "com.nearme.instant.platform"];
-			let opts = {
-				cwd: projDir,
-				shell: true
-			};
-			let cp = childProcess.spawn(cmd, args, opts);
-			// let cp = childProcess.spawn('npx.cmd', ['-v']);
-			cp.stdout.on('data', (data) => {
-				console.log(`stdout: ${data}`);
-			});
-	
-			cp.stderr.on('data', (data) => {
-				console.log(`stderr: ${data}`);
-				// reject();
-			});
-	
-			cp.on('close', (code) => {
-				console.log(`3) push_RPK 子进程退出码：${code}`);
-				resolve();
-			});
-		});
-	}).then(() => {
-		return new Promise((resolve, reject) => {
-			let cmd = `${adbPath}`;
 			let args = ["shell", "am", "start", "-n", "com.nearme.instant.platform/com.oppo.autotest.main.InstantAppActivity"];
 			let opts = {
 				cwd: projDir,
@@ -467,7 +414,7 @@ gulp.task("pushRPK_OPPO", ["buildRPK_OPPO"], function() {
 			});
 	
 			cp.on('close', (code) => {
-				console.log(`4) push_RPK 子进程退出码：${code}`);
+				console.log(`3) push_RPK 子进程退出码：${code}`);
 				resolve();
 			});
 		});
